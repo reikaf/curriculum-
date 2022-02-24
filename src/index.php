@@ -39,16 +39,24 @@
 						<th class="px-4 py-2">住所</th>
 						<th class="px-4 py-2">電話番号</th>
 						<th class="px-4 py-2"></th>
-						<th class="px-4 py-2"></th>
 					</tr>
 				</thead>
-				<?php foreach($users as $user): ?>
-					<tr>
-						<td class="border px-4 py-2"><?php echo $user['name'] ?></td>
-						<td class="border px-4 py-2"><?php echo $user['address'] ?></td>
-						<td class="border px-4 py-2"><?php echo $user['tel'] ?></td>
-					</tr>
-				<?php endforeach; ?>
+				<tbody>
+					<?php foreach($users as $user): ?>
+						<tr>
+							<td class="border px-4 py-2"><?php echo $user['name'] ?></td>
+							<td class="border px-4 py-2"><?php echo $user['address'] ?></td>
+							<td class="border px-4 py-2"><?php echo $user['tel'] ?></td>
+							<td class="border px-4 py-2">
+								<button
+									class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+								>
+									<a href="<?php echo '/edit.php?id=' . $user['id'] ?>">編集</a>
+								</button>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
 			</table>
 		</div>
 	</div>
