@@ -1,26 +1,17 @@
 <?php
-	$dsn = 'mysql:dbname=test;host=127.0.0.1;port=3006;charset=utf8mb4';
-	$user= 'root';
-	$password = 'root';
+	require_once './user.php';
+	$user = new User();
+	$users = $user->index();
 
-	try {
-		$db  = new PDO($dsn, $user, $password);
-	} catch (PDOException $e) {
-		echo "接続に失敗しました：" . $e->getMessage() . "\n";
-		exit();
-	}
-
-	$users = $db->query("SELECT * FROM users WHERE del_flg = false") 
-							->fetchAll(PDO::FETCH_ASSOC);
-						
+	$errorMessage = null;
 	if (!empty($_GET['id'])) {
-		$id = $_GET['id'];
-		$sql = "UPDATE users SET del_flg = true WHERE id = :id AND del_flg = false";
-		$stmt = $db->prepare($sql);
-		$stmt->bindValue(':id', $id, PDO::PARAM_STR);
-		$stmt->execute();
-		header('Location: http://localhost:8080');
-}
+		try {
+			$user->delete($_GET['id']);
+			header('Location: http://localhost:8080');
+		} catch (Exception $e) {
+			$errorMessage = $e->getMessage();
+		}
+	}
 ?>
 <html lang="ja">
 <head>
@@ -32,6 +23,11 @@
 </head>
 <body>
 	<div class="container w-auto inline-block px-8">
+		<?php if ($errorMessage): ?>
+			<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+				<span class="block sm:inline"><?php echo $errorMessage ?></span>
+			</div>
+		<?php endif; ?>
 		<div class="mt-20 mb-10 flex justify-between">
 			<h1 class="text-base">登録者一覧</h1>
 			<button 
