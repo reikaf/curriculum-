@@ -49,16 +49,19 @@ class TodoControllerTest extends TestCase
             'content' => 'テスト:内容'
         ];
 
-        $res = $this->postJson(route('api.update.create'), $params);
-        $res->assertOk();
-        $updates = Update::all();
+        $todo = Todo::create([
+            'title' => 'テスト:タイトル',
+            'content' => 'テスト:内容'
+        ]);
 
-        $this->assertCount(1, $updates);
+        $this->assertEquals($params['title'], $todo->title);
+        $this->assertEquals($params['content'], $todo->content);
 
-        $update = $updates->first();
+        $todo->fill(['title' => 'テスト:タイトル']);
+        $todo->save();
 
-        $this->assertEquals($params['title'], $update->title);
-        $this->assertEquals($params['content'], $update->content);
-
+        $todo2 = Todo::find($todo->id);
+        $this->assertEquals($params['title'], $todo2->title);
+        $this->assertEquals($params['content'], $todo2->content);
     }
 }
