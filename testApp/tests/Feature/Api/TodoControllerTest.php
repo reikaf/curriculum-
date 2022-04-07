@@ -3,9 +3,9 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Todo;
-use App\Models\Update;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Database\Factories\TodoFactory;
 
 class TodoControllerTest extends TestCase
 {
@@ -36,7 +36,6 @@ class TodoControllerTest extends TestCase
 
         $this->assertEquals($params['title'], $todo->title);
         $this->assertEquals($params['content'], $todo->content);
-
     }
 
     /**
@@ -57,11 +56,48 @@ class TodoControllerTest extends TestCase
         $this->assertEquals($params['title'], $todo->title);
         $this->assertEquals($params['content'], $todo->content);
 
-        $todo->fill(['title' => 'テスト:タイトル']);
+        $todo->fill($params);
         $todo->save();
 
         $todo2 = Todo::find($todo->id);
         $this->assertEquals($params['title'], $todo2->title);
         $this->assertEquals($params['content'], $todo2->content);
+    }
+
+    /**
+     * @test
+     */
+    public function Todoの更新失敗()
+    {
+
+        $todo = Todo::factory()->create();
+        $data = [
+            'title' => ['',str_repeat('a', 256)],
+            'content' => ['',str_repeat('a', 256)]
+            ];
+
+        $response = $this->postjson(route('api.todo.update',[ 'todo' => $todo->id ]),$data);
+        $response -> assertStatus(405);
+    }
+
+    /**
+     * @test
+     */
+    public function Todoの削除成功()
+    {
+        $todo = Todo::factory()->create();
+        $response = $this->delete('todo/'.$todo->id);
+        $response->assertStatus(302);
+        $this->assertEmpty(Todo::find($todo->id));
+    }
+
+    /**
+     * @test
+     */
+    public function Todoの削除失敗()
+    {
+        $todo = Todo::factory()->create();
+        $response = $this->delete(route('api.todo.destroy', [ 'todo' => 999 ]));
+        $response->assertStatus(404);
     }
 }

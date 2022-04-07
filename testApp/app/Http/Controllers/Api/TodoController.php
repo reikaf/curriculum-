@@ -41,7 +41,7 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request,$id)
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -52,6 +52,16 @@ class TodoController extends Controller
         return ['message' => '更新ok'];
     }
 
-
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(int $id)
+    {
+        $this->todo->findOrFail($id)->delete();
+        return ['message' => '削除ok'];
+    }
 }
 
