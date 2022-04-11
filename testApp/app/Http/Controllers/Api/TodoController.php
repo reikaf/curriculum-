@@ -63,5 +63,17 @@ class TodoController extends Controller
         $this->todo->findOrFail($id)->delete();
         return ['message' => '削除ok'];
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(int $id)
+    {
+        $todo = $this->todo->findOrFail($id);
+        return ['message' => 'ok'];
+    }
 }
 
