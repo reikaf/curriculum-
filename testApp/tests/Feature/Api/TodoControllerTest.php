@@ -77,7 +77,7 @@ class TodoControllerTest extends TestCase
             ];
 
         $response = $this->postjson(route('api.todo.update',[ 'todo' => $todo->id ]),$data);
-        $response -> assertStatus(405);
+        $response->assertStatus(405);
     }
 
     /**
@@ -86,8 +86,8 @@ class TodoControllerTest extends TestCase
     public function Todoの削除成功()
     {
         $todo = Todo::factory()->create();
-        $response = $this->delete('todo/'.$todo->id);
-        $response->assertStatus(302);
+        $response = $this->delete(route('api.todo.destroy',[ 'todo' => $todo->id ]));
+        $response->assertStatus(200);
         $this->assertEmpty(Todo::find($todo->id));
     }
 
