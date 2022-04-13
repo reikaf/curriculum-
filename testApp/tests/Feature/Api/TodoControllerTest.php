@@ -43,25 +43,13 @@ class TodoControllerTest extends TestCase
      */
     public function Todoの更新()
     {
-        $params = [
+        $todo = Todo::factory()->create();
+        $data = [
             'title' => 'テスト:タイトル',
             'content' => 'テスト:内容'
         ];
-
-        $todo = Todo::create([
-            'title' => 'テスト:タイトル',
-            'content' => 'テスト:内容'
-        ]);
-
-        $this->assertEquals($params['title'], $todo->title);
-        $this->assertEquals($params['content'], $todo->content);
-
-        $todo->fill($params);
-        $todo->save();
-
-        $todo2 = Todo::find($todo->id);
-        $this->assertEquals($params['title'], $todo2->title);
-        $this->assertEquals($params['content'], $todo2->content);
+        $response = $this->putJson(route('api.todo.update',[ 'todo' => $todo->id ]),$data);
+        $response->assertStatus(200);
     }
 
     /**
@@ -76,8 +64,8 @@ class TodoControllerTest extends TestCase
             'content' => ['',str_repeat('a', 256)]
             ];
 
-        $response = $this->postjson(route('api.todo.update',[ 'todo' => $todo->id ]),$data);
-        $response->assertStatus(405);
+        $response = $this->putJson(route('api.todo.update',[ 'todo' => $todo->id ]),$data);
+        $response->assertStatus(422);
     }
 
     /**
@@ -96,6 +84,7 @@ class TodoControllerTest extends TestCase
      */
     public function Todoの削除失敗()
     {
+        $todo = Todo::factory()->create();
         $response = $this->delete(route('api.todo.destroy', [ 'todo' => 999 ]));
         $response->assertStatus(404);
     }
@@ -107,7 +96,7 @@ class TodoControllerTest extends TestCase
     {
         $todo = Todo::factory()->create();
         $id = $todo->id;
-        $response = $this->get("todo/{$id}/edit");
+        $response = $this->get("todo/{$id}");
         $response->assertStatus(200);
     }
 
@@ -117,7 +106,7 @@ class TodoControllerTest extends TestCase
     public function Todoの詳細取得の失敗()
     {
         $todo = Todo::factory()->create();
-        $response = $this->get(route('api.todo.edit', [ 'todo' => 999 ]));
+        $response = $this->get(route('api.todo.show', [ 'todo' => 999 ]));
         $response->assertStatus(404);
     }
 }

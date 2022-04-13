@@ -18,6 +18,17 @@ class TodoController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $todos = $this->todo->orderby('updated_at', 'desc')->paginate(5);
+        return ['message' => 'ok'];
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -48,7 +59,7 @@ class TodoController extends Controller
             'content' => ['required', 'string', 'max:255']
         ]);
 
-        $this->todo->findOrFail($id)->fill($validated)->save();
+        $this->todo->findOrFail($id)->fill($validated)->update();
         return ['message' => '更新ok'];
     }
 
@@ -70,7 +81,7 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(int $id)
+    public function show(int $id)
     {
         $todo = $this->todo->findOrFail($id);
         return ['message' => 'ok'];
