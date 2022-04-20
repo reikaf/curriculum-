@@ -85,6 +85,7 @@ class TodoController extends Controller
     {
         $todo = $this->todo->findOrFail($id);
         return ['message' => 'ok'];
+        return ['todo', ['todo' => $todo]];
     }
 }
 

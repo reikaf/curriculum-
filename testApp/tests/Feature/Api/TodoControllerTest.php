@@ -50,6 +50,13 @@ class TodoControllerTest extends TestCase
         ];
         $response = $this->putJson(route('api.todo.update',[ 'todo' => $todo->id ]),$data);
         $response->assertStatus(200);
+
+        $database = [
+            'title' => 'テスト:タイトル',
+            'content' => 'テスト:内容'
+        ];
+        $response = $this->putJson(route('api.todo.update',[ 'todo' => $todo->id ]),$database);
+        $this->assertDatabaseHas('todos', $database);
     }
 
     /**
@@ -74,7 +81,7 @@ class TodoControllerTest extends TestCase
     public function Todoの削除成功()
     {
         $todo = Todo::factory()->create();
-        $response = $this->delete(route('api.todo.destroy',[ 'todo' => $todo->id ]));
+        $response = $this->deleteJson(route('api.todo.destroy',[ 'todo' => $todo->id ]));
         $response->assertStatus(200);
         $this->assertEmpty(Todo::find($todo->id));
     }
@@ -85,7 +92,7 @@ class TodoControllerTest extends TestCase
     public function Todoの削除失敗()
     {
         $todo = Todo::factory()->create();
-        $response = $this->delete(route('api.todo.destroy', [ 'todo' => 999 ]));
+        $response = $this->deleteJson(route('api.todo.destroy', [ 'todo' => 999 ]));
         $response->assertStatus(404);
     }
 
@@ -96,7 +103,7 @@ class TodoControllerTest extends TestCase
     {
         $todo = Todo::factory()->create();
         $id = $todo->id;
-        $response = $this->get("todo/{$id}");
+        $response = $this->getJson(route('api.todo.show',[ 'todo' => $todo->id ]));
         $response->assertStatus(200);
     }
 
@@ -106,7 +113,7 @@ class TodoControllerTest extends TestCase
     public function Todoの詳細取得の失敗()
     {
         $todo = Todo::factory()->create();
-        $response = $this->get(route('api.todo.show', [ 'todo' => 999 ]));
+        $response = $this->getJson(route('api.todo.show', [ 'todo' => 999 ]));
         $response->assertStatus(404);
     }
 }
